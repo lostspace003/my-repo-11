@@ -1,0 +1,21 @@
+name: Nightly TODO report
+on:
+  schedule:
+    - cron: "30 3 * * *"      # every day at 03:30 UTC
+  workflow_dispatch:           # adds a "Run workflow" button for testing
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "List every TODO in the .py files and say which ones have no ticket number."
+          claude_args: |
+            --max-turns 8
+            --allowedTools "Read,Grep,Glob"
